@@ -45,7 +45,7 @@ class CategoryRepositoryImpl implements CategoryRepository
     ];
 
     if ($search->categoryName != "") {
-      $condition = ["name", "like", "%" . $search->categoryName . "%"];
+      $condition[] = ["name", "like", "%" . $search->categoryName . "%"];
     }
     return $condition;
   }

@@ -82,21 +82,18 @@ class CategoryController extends Controller
 
 	private function getCategorySearch(Request $request)
 	{
-		$categoryName = "";
-		if ($request->has("categoryName")) {
-			$categoryName = $request->get("categoryName");
-		}
-
-		$page = 1;
-		if ($request->has("page")) {
-			$page = $request->get("page");
-		}
-
-		$size = 10;
-		if ($request->has("size")) {
-			$size = $request->get("size");
-		}
+		$categoryName = $this->getQueryString($request, "categoryName");
+		$page = $this->getQueryString($request, "page");
+		$size = $this->getQueryString($request, "size");
 
 		return new CategorySearch($categoryName, $page, $size);
+	}
+
+	private function getQueryString(Request $request, $queryString)
+	{
+		if ($request->has($queryString)) {
+			return $request->get($queryString);
+		}
+		return "";
 	}
 }
