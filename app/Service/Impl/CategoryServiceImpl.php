@@ -2,7 +2,7 @@
 
 namespace App\Service\Impl;
 
-use App\Dto\Search\CategorySearch;
+use App\Dto\Search\CommonSearch;
 use App\Exceptions\BusinessException;
 use App\Repository\CategoryRepository;
 use App\Service\BaseService;
@@ -39,13 +39,13 @@ class CategoryServiceImpl extends BaseService implements CategoryService
     return $this->buildSuccessResponse($this->findCategoryById($categoryId));
   }
 
-  public function getCategoryWithPagination(CategorySearch $search)
+  public function getCategoryWithPagination(CommonSearch $search)
   {
     $categories = $this->categoryRepository->getCategoryWithPagination($search);
     return $this->buildSuccessResponse($categories);
   }
 
-  public function getCategoryWithoutPagination(CategorySearch $search)
+  public function getCategoryWithoutPagination(CommonSearch $search)
   {
     $categories = $this->categoryRepository->getCategoryWithoutPagination($search);
     return $this->buildSuccessResponse($categories);

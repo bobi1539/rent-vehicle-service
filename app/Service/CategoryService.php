@@ -2,14 +2,14 @@
 
 namespace App\Service;
 
-use App\Dto\Search\CategorySearch;
+use App\Dto\Search\CommonSearch;
 
 interface CategoryService
 {
   public function saveCategory($validData);
   public function updateCategory($categoryId, $validData);
   public function getCategoryById($categoryId);
-  public function getCategoryWithPagination(CategorySearch $search);
-  public function getCategoryWithoutPagination(CategorySearch $search);
+  public function getCategoryWithPagination(CommonSearch $search);
+  public function getCategoryWithoutPagination(CommonSearch $search);
   public function deleteCategory($categoryId);
 }

@@ -6,6 +6,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 function buildErrorResponse($code, $message)
 {
@@ -28,9 +30,22 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
+        $exceptions->renderable(function (RouteNotFoundException $e) {
+            Log::error($e);
+            $response = buildErrorResponse(401, "Unauthorized");
+            return response($response, 401);
+        });
+
+        $exceptions->renderable(function (NotFoundHttpException $e) {
+            Log::error($e);
+            $response = buildErrorResponse(404, "Not Found");
+            return response($response, 404);
+        });
+
         $exceptions->renderable(function (ValidationException $e) {
             Log::error($e);
-            $response = buildErrorResponse(400, $e->getMessage());
+            $message = str_replace(" (and 1 more error)", "", $e->getMessage());
+            $response = buildErrorResponse(400, $message);
             return response($response, 400);
         });
 
@@ -40,9 +55,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return response($response, $e->getCode());
         });
 
-        $exceptions->renderable(function (Exception $e) {
-            Log::error($e);
-            $response = buildErrorResponse(500, "Internal Server Error");
-            return response($response, 500);
-        });
+        if (env("APP_ENV") != "local") {
+            $exceptions->renderable(function (Exception $e) {
+                Log::error($e);
+                $response = buildErrorResponse(500, "Internal Server Error");
+                return response($response, 500);
+            });
+        }
     })->create();

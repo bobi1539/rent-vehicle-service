@@ -2,7 +2,7 @@
 
 namespace App\Repository\Impl;
 
-use App\Dto\Search\CategorySearch;
+use App\Dto\Search\CommonSearch;
 use App\Models\Category;
 use App\Repository\CategoryRepository;
 
@@ -26,27 +26,32 @@ class CategoryRepositoryImpl implements CategoryRepository
     ])->first();
   }
 
-  public function getCategoryWithPagination(CategorySearch $search)
+  public function getCategoryWithPagination(CommonSearch $search)
   {
-    return Category::where($this->getCondition($search))
-      ->paginate($search->size)
+    return Category::where($this->isDeletedFalse())
+      ->whereAny(
+        ["name", "description"],
+        "like",
+        "%" . $search->getSearch() . "%"
+      )
+      ->paginate($search->getSize())
       ->withQueryString();
   }
 
-  public function getCategoryWithoutPagination(CategorySearch $search)
+  public function getCategoryWithoutPagination(CommonSearch $search)
   {
-    return Category::where($this->getCondition($search))->get();
+    return Category::where($this->isDeletedFalse())
+      ->whereAny(
+        ["name", "description"],
+        "like",
+        "%" . $search->getSearch() . "%"
+      )->get();
   }
 
-  private function getCondition(CategorySearch $search)
+  private function isDeletedFalse()
   {
-    $condition = [
+    return [
       ["is_deleted", "=", false]
     ];
-
-    if ($search->categoryName != "") {
-      $condition[] = ["name", "like", "%" . $search->categoryName . "%"];
-    }
-    return $condition;
   }
 }

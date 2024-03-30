@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dto\Search\CategorySearch;
+use App\Dto\Search\CommonSearch;
 use App\Helper\Helper;
 use App\Models\Category;
 use App\Service\CategoryService;
@@ -36,13 +37,13 @@ class CategoryController extends Controller
 
 	public function getCategoryWithPagination(Request $request)
 	{
-		$search = $this->getCategorySearch($request);
+		$search = $this->getSearch($request);
 		return $this->categoryService->getCategoryWithPagination($search);
 	}
 
 	public function getCategoryWithoutPagination(Request $request)
 	{
-		$search = $this->getCategorySearch($request);
+		$search = $this->getSearch($request);
 		return $this->categoryService->getCategoryWithoutPagination($search);
 	}
 
@@ -80,19 +81,19 @@ class CategoryController extends Controller
 		return Helper::getPathVariable($request->getRequestUri());
 	}
 
-	private function getCategorySearch(Request $request)
+	private function getSearch(Request $request)
 	{
-		$categoryName = $this->getQueryString($request, "categoryName");
-		$page = $this->getQueryString($request, "page");
-		$size = $this->getQueryString($request, "size");
+		$search = $this->getQueryParam($request, "search");
+		$page = $this->getQueryParam($request, "page");
+		$size = $this->getQueryParam($request, "size");
 
-		return new CategorySearch($categoryName, $page, $size);
+		return new CommonSearch($search, $page, $size);
 	}
 
-	private function getQueryString(Request $request, $queryString)
+	private function getQueryParam(Request $request, $paramName)
 	{
-		if ($request->has($queryString)) {
-			return $request->get($queryString);
+		if ($request->has($paramName)) {
+			return $request->get($paramName);
 		}
 		return "";
 	}
