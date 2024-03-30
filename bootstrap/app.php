@@ -30,19 +30,19 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->renderable(function (ValidationException $e) {
             Log::error($e);
-            return response(buildErrorResponse(400, $e->getMessage()), 400);
+            $response = buildErrorResponse(400, $e->getMessage());
+            return response($response, 400);
         });
 
         $exceptions->renderable(function (BusinessException $e) {
             Log::error($e);
-            return response(buildErrorResponse(
-                $e->getCode(),
-                $e->getMessage()
-            ), $e->getCode());
+            $response = buildErrorResponse($e->getCode(), $e->getMessage());
+            return response($response, $e->getCode());
         });
 
         $exceptions->renderable(function (Exception $e) {
             Log::error($e);
-            return response(buildErrorResponse(500, "Internal Server error"), 500);
+            $response = buildErrorResponse(500, "Internal Server Error");
+            return response($response, 500);
         });
     })->create();
