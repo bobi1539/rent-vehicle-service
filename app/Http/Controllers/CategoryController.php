@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Dto\Search\CategorySearch;
 use App\Dto\Search\CommonSearch;
 use App\Helper\Helper;
-use App\Models\Category;
 use App\Service\CategoryService;
 use Illuminate\Http\Request;
 

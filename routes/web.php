@@ -21,4 +21,5 @@ Route::controller(AuthController::class)->group(function () {
     Route::post(config("endpoint.AUTH_LOGIN"), "login");
     Route::post(config("endpoint.AUTH_LOGOUT"), "logout");
     Route::get(config("endpoint.AUTH_USER"), "getUserData");
+    Route::post(config("endpoint.AUTH_REGISTER"), "register");
 });

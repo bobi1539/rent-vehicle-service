@@ -18,14 +18,24 @@ abstract class BaseService
 
   protected function getCreatedData()
   {
+    $user = $this->getUserFromToken();
     return [
       "created_at" => Carbon::now()->timestamp,
-      "created_by" => 1,
-      "created_by_name" => "system",
+      "created_by" => $user["id"],
+      "created_by_name" => $user["name"],
       "updated_at" => Carbon::now()->timestamp,
-      "updated_by" => 1,
-      "updated_by_name" => "system",
+      "updated_by" => $user["id"],
+      "updated_by_name" => $user["name"],
       "is_deleted" => false
+    ];
+  }
+
+  protected function getUserFromToken()
+  {
+    $payload = auth()->payload();
+    return [
+      "id" => $payload["user_id"],
+      "name" => $payload["name"]
     ];
   }
 }
